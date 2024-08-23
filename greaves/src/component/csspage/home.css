@@ -1,0 +1,90 @@
+.table-container {
+    width: 100%;
+    /* overflow-x: auto; */
+    /* margin-right: 10px; */
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table tr {
+    height: 5px; /* Adjust height as needed */
+  }
+  
+  th, td {
+    text-align: center;
+    /* padding: 8px; */
+    border: 1px solid #ddd;
+  }
+
+.table td {
+  height: 10px; /* Adjust height as needed */
+}
+  
+  th {
+    background-color: #f2f2f2;
+  }
+
+  
+  .container1 {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+
+  
+
+.definition-list {
+  margin: 0;
+  padding: 0;
+}
+
+.definition-item {
+  display: flex;
+  /* justify-content: space-between; */
+  margin-bottom: 10px;
+}
+
+.term {
+  font-weight: bold;
+  width: 80%;
+  text-align: left;
+}
+
+.description {
+  width: 20%;
+  text-align: center;
+  color: #555555;
+}
+
+.carousel-caption-top-right {
+  top: 0px; /* Adjust as needed */
+  /* right: 10px; Adjust as needed */
+  bottom: auto; /* Ensure it's not pushed to the bottom */
+  right: auto; /* Ensure it's not pushed to the left */
+  text-align: right; /* Align text to the right */
+  position: absolute; /* Position it absolutely within the carousel item */
+  color: black; /* Set font color to black */
+}
+/* Customize the left and right arrows of the carousel */
+.carousel-control-prev,
+.carousel-control-next {
+  color: #fff; /* Set arrow color */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  width: 30px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #000; /* Background color for the arrow icons */
+  border-radius: 50%; /* Round the background */
+}
+
+/* Ensure arrows are visible over the image */
+.carousel-item img {
+  width: 100%;
+  height: auto;
+}
