@@ -22,7 +22,7 @@ import UserNewEntry from './component/htmlpage/user_list/usernewentry';
 import UserEditEntry from './component/htmlpage/user_list/usereditentry';
 import Assemblyop from './component/htmlpage/atp/assemblyop';
 import NewPage from './component/htmlpage/atp/newpage';
-import Assemblyopresult from './component/htmlpage/atp/assemblyopresult.js'
+import Assemblyopresult from './component/htmlpage/atp/assemblyopresult'
 
 
 function App() {
