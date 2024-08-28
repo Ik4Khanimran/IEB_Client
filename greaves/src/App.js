@@ -25,12 +25,18 @@ import NewPage from './component/htmlpage/atp/newpage';
 import Assemblyopresult from './component/htmlpage/atp/assemblyopresult'
 
 
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
   };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+  
 
   return (
     <BrowserRouter>
@@ -63,7 +69,10 @@ function App() {
         <Route path="/user_newentry" element={<UserNewEntry />} />
         <Route path="/user_editentry" element={<UserEditEntry />} />
         <Route path="/assemblyop" element={<Assemblyop />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route 
+          path="/logout" 
+          element={<Logout onLogout={handleLogout} />} 
+        />
         <Route path="/" element={<Assemblyop />} />
         <Route path="/new-page" element={<NewPage />} />
         <Route path="/assemblyopresult" element={<Assemblyopresult />} />

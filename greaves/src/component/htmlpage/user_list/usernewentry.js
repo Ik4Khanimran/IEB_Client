@@ -154,6 +154,8 @@ if (tableName === 'user_list') {
                       </select>
                     ) : field.type === 'email' ? (
                       <input className="form-control" type="email" name={field.name} required />
+                    ) : field.type === 'password' ? (
+                      <input className="form-control" type="password" name={field.name} required />
                     ) : (
                       field.type === 'text' ? (
                         <textarea

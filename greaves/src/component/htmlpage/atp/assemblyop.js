@@ -22,21 +22,15 @@ const Assemblyop = () => {
   const [crankCaseNo, setCrankCaseNo] = useState('');
   const [fipNo, setFipNo] = useState('');
   const [turboNo, setTurboNo] = useState('');
-  // const [rating, setRating] = useState('');
   const [remark, setRemark] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // const currentTimeStamp = new Date().toISOString();
-
-  
-  
     const currentTimeStamp = new Date().toLocaleString('en-US', {
       timeZone: 'Asia/Kolkata'
     }); 
 
   const navigate = useNavigate();  
   const getSessionData = useCallback(() => {
-      console.log('getSessionData called');
       const csrfToken = sessionStorage.getItem('csrfToken');
       return { csrfToken, esn, stno };
   }, [esn, stno]);
@@ -50,7 +44,6 @@ const Assemblyop = () => {
           return;
       }
 
-      console.log('fetchData called');
       hasFetchedData.current = true; // Set flag to true after the first call
 
       try {
@@ -74,7 +67,6 @@ const Assemblyop = () => {
 
   useEffect(() => {
       document.title = "Result";
-      console.log('useEffect called');
       fetchData();
   }, [fetchData]);
 
@@ -84,7 +76,6 @@ const Assemblyop = () => {
     setIsSubmitting(true); 
 
     const csrfToken = sessionStorage.getItem('csrfToken');
-    console.log('check token', csrfToken);
 
     const formData = {
       stno: resultData.header_data.stno,        
@@ -97,13 +88,11 @@ const Assemblyop = () => {
       crankCaseNo: crankCaseNo,
       fipNo: fipNo,
       turboNo: turboNo,
-     // rating: rating,
       remark: remark,
       bom: bom
       
     };
 
-    // Validation checks
     if (!crankCaseNo.trim() || !fipNo.trim() || !turboNo.trim() || !remark.trim()) {
       alert('All fields must be filled out before submitting.');
       setIsSubmitting(false);
@@ -129,7 +118,7 @@ const Assemblyop = () => {
         }
       );
       if (response.data.status === 'success') {
-        console.log('Roll down data successfully submitted.');
+        
         window.alert(`Roll down for ${formData.esn} successfully submitted.`); 
         window.close();
       } else {
@@ -146,35 +135,25 @@ const Assemblyop = () => {
     }
 };
 
-
-  
-
   const handleHoldClick = () => {
-      console.log('Hold button clicked. Data is on hold.');
   };
-
-  
-  
 
   return (
     <div className="container2">
-      {/* Existing UI elements */}
       <div className="row justify-content-center align-items-center">
         <div className="col-2 greaves"> GREAVES </div>
         <div className="col-8">
           <h2 align="center" style={{ padding: '0', marginTop: '5px', marginBottom: '5px' }}>
-            Engine Operations
+            Assembly Engine Roll Down Operation
           </h2>
         </div>
         <div className="col-2 ieb"> Industrial Engine Unit </div>
       </div>
 
-      {/* Submit Button */}
       <div className="row justify-content-center mt-3">
         <button className="btn btn-primary">Operation Done</button>
       </div>
 
-      {/* Header data */}
       <div className="row justify-content-center align-items-center mt-4 mb-4">
         <div className="row mx-4">
           <div className="table-responsive">
@@ -197,7 +176,9 @@ const Assemblyop = () => {
                     </tr>
                     <tr>
                       <th>Description</th>
-                      <td colSpan={3}>{resultData.header_data?.description || 'N/A'}</td>
+                      <td >{resultData.header_data?.description || 'N/A'}</td>
+                      <th>Bom No</th>
+                      <td >{resultData.header_data?.bom || 'N/A'}</td>
                       <th>Station No</th>
                       <td>{resultData.header_data?.stno || 'N/A'}</td>
                     </tr>
@@ -239,7 +220,7 @@ const Assemblyop = () => {
             <table className="table table-bordered">
               <thead className="thead-dark">
                 <tr>
-                  <th colSpan="2" className="text-center">Input Engine Details</th>
+                  <th colSpan="2" className="text-center">Input Assembly Engine Details</th>
                 </tr>
               </thead>
               <tbody>
@@ -261,12 +242,6 @@ const Assemblyop = () => {
                   value={turboNo} onChange={(e) => setTurboNo(e.target.value)} />
                   </td>
                 </tr>
-                {/* <tr> 
-                  <th>Rating</th>
-                  <td><input type="text" className="form-control" placeholder="Enter Rating"
-                  value={rating} onChange={(e) => setRating(e.target.value)} /> 
-                  </td>
-                </tr> */}
                 <tr>
                   <th>Remark</th>
                   <td><input type="text" className="form-control" placeholder="Enter Remark"
@@ -279,7 +254,6 @@ const Assemblyop = () => {
         </div>
       </div>
 
-      {/* Button Section */}
       <div className="row justify-content-center mb-4">
         <div className="col-auto">
           <button className="btn btn-success" onClick={handleRollDownSubmit}>

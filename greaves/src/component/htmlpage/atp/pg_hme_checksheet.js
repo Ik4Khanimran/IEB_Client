@@ -21,8 +21,7 @@ const Hme_checksheet = () => {
     e.preventDefault();
     try {
       const csrfToken = sessionStorage.getItem('csrfToken');
-
-      const response = await axios.get(DATA_URL, {
+      const response = await axios.post(DATA_URL, {
         esn,
         stno
       },
@@ -52,7 +51,6 @@ const Hme_checksheet = () => {
           }
           if(encodeURIComponent(stno) == '10'){
             console.log("Let open page for Station 10")
-            console.log(encodeURIComponent(stno))
             const url = `/assemblyop?esn=${encodeURIComponent(esn)}&stno=${encodeURIComponent(stno)}`;
             window.open(url, '_blank');
           }
@@ -80,10 +78,6 @@ const Hme_checksheet = () => {
         if (stno_r === '10') {
             // Perform specific actions for station number 10
             console.log('Station number is 10. Performing specific actions.');
-            console.log(stno_r, esn_r)
-            console.log(encodeURIComponent(esn_r))
-            
-            // Example: Open a different page or perform additional actions
             const url = `/assemblyopresult?esn=${encodeURIComponent(esn_r)}&stno=${encodeURIComponent(stno_r)}`;
             window.open(url, '_blank');
         } else {
@@ -98,21 +92,6 @@ const Hme_checksheet = () => {
         console.error('Error:', error);
     }
 }
-
-    // const handleGetEngResult = async (e) => {
-    //   e.preventDefault();
-    //   sessionStorage.setItem('esn_r', esn_r);
-    //   sessionStorage.setItem('stno_r', stno_r);
-    //   try {
-    //     const csrfToken = sessionStorage.getItem('csrfToken');
-    //     window.open('/resultchecksheet', '_blank');
-    //     setEsn_R('');
-    //     setStno_R('');
-    //   } catch (error) {
-    //     console.error('Error:', error);
-    //   }
-    // }; 
-
 
   const handleShowScanner = () => setShowScanner(true);
   const handleCloseScanner = () => setShowScanner(false);
@@ -153,7 +132,6 @@ const Hme_checksheet = () => {
     }
   };
   
-
   return (
     <div>
       <h2>Checksheet</h2>

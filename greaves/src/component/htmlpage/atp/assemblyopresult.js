@@ -3,7 +3,6 @@ import axios from '../../../utils/axiosConfig';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { useLocation } from 'react-router-dom';
-import { OPEN_OPS_ST10_URL } from '../../../utils/apiUrls';
 import { GET_ASSEMBLYOP_DATA_URL } from '../../../utils/apiUrls';
 
 
@@ -13,6 +12,7 @@ function useQuery() {
 
 const Assemblyopresult = () => {
   const [resultData, setResultData] = useState(null);
+  const [engineData, setEngineData] = useState(null);
   const [error, setError] = useState(null);
   const hasFetchedData = useRef(false); // Flag to prevent double fetch
   const location = useLocation();
@@ -21,9 +21,6 @@ const Assemblyopresult = () => {
   const stno_r = params.get('stno');
   const [username] = useState(sessionStorage.getItem('name') || 'Unknown User');
   const [userId] = useState(sessionStorage.getItem('emp_id') || 'Unknown ID');
-  
-  console.log('ESN:', esn_r);
-  console.log('Station Number:', stno_r);
 
   const getSessionData = useCallback(() => {
     const csrfToken = sessionStorage.getItem('csrfToken');
@@ -38,7 +35,6 @@ const Assemblyopresult = () => {
       return;
     }
 
-    console.log('fetchData called');
     hasFetchedData.current = true; // Set flag to true after the first call
 
     try {
@@ -53,11 +49,10 @@ const Assemblyopresult = () => {
         withCredentials: true
       });
 
-      console.log('Response:', response);
-
       if (response.data.status === 'success') {
-        console.log('Result Data:', response.data.data);
-        setResultData(response.data.data); // Save the result data
+        setResultData(response.data.data[0]); // Save the result data
+        setEngineData(response.data.header_data)
+        
       } else {
         console.error('Error Message:', response.data.message);
         setError(response.data.message || 'Error fetching data');
@@ -73,20 +68,22 @@ const Assemblyopresult = () => {
     fetchData();
   }, [fetchData]);
 
+
   return (
     <div className="container2">
-      {/* Existing UI elements */}
       <div className="row justify-content-center align-items-center">
         <div className="col-2 greaves"> GREAVES </div>
         <div className="col-8">
           <h2 align="center" style={{ padding: '0', marginTop: '5px', marginBottom: '5px' }}>
-            Engine Operations
+          Engine Assembly Roll Down Result
           </h2>
         </div>
         <div className="col-2 ieb"> Industrial Engine Unit </div>
       </div>
 
-      {/* Header data */}
+      <div className="row justify-content-center mt-3">
+        <button className="btn btn-primary">Operation Done</button>
+      </div>
       <div className="row justify-content-center align-items-center mt-4 mb-4">
         <div className="row mx-4">
           <div className="table-responsive">
@@ -101,17 +98,19 @@ const Assemblyopresult = () => {
                   <>
                   <tr>
                     <th>Engine Sr No</th>
-                    <td>{resultData.esn}</td>
+                    <td>{engineData.esn}</td>
                     <th>Model</th>
-                    <td>{resultData.header_data?.engmodel || 'N/A'}</td>
+                    <td>{engineData?.engmodel || 'N/A'}</td>
                     <th>Engine Type</th>
-                    <td>{resultData.header_data?.type || 'N/A'}</td>
+                    <td>{engineData?.type || 'N/A'}</td>
                   </tr>
                   <tr>
                     <th>Description</th>
-                    <td colSpan={3}>{resultData.header_data?.description || 'N/A'}</td>
+                    <td colSpan={1}>{engineData?.description || 'N/A'}</td>
+                    <th>Bom</th>
+                    <td>{engineData?.bom || 'N/A'}</td>
                     <th>Station No</th>
-                    <td>{resultData.stno_r || 'N/A'}</td>
+                    <td>{engineData?.stno || 'N/A'}</td>
                   </tr>
                   <tr>
                     <th>Name</th>
@@ -120,14 +119,6 @@ const Assemblyopresult = () => {
                     <td>{userId}</td>
                     <th>Date & Time</th>
                     <td>{new Date(resultData.time_stamp).toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <th>Next Ok Station</th>
-                    <td>{resultData.header_data?.pass_loc || 'N/A'}</td>
-                    <th>Next Nok Station</th>
-                    <td>{resultData.header_data?.fail_loc || 'N/A'}</td>
-                    <th>Result Station</th>
-                    <td>{resultData.header_data?.result_loc || 'N/A'}</td>
                   </tr>
                 </>
                 ) : error ? (
@@ -157,10 +148,6 @@ const Assemblyopresult = () => {
               <tbody>
               {resultData ? (
               <>
-                {/* <tr>
-                  <th>ESN</th>
-                  <td>{resultData.esn || 'N/A'}</td>
-                </tr> */}
                 <tr>
                   <th>Crank Case No</th>
                   <td>{resultData.crankcase_no || 'N/A'}</td>
@@ -176,10 +163,6 @@ const Assemblyopresult = () => {
                 <tr>
                   <th>Remark</th>
                   <td>{resultData.remark || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <th>BOM</th>
-                  <td>{resultData.bom_id || 'N/A'}</td>
                 </tr>
               </>
             ) : (

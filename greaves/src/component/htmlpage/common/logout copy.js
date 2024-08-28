@@ -5,7 +5,6 @@ const Logout = ({ onLogout }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Logging out, navigating to /login");
     // Clear all data from session storage
     sessionStorage.clear();
 
@@ -27,7 +26,7 @@ const Logout = ({ onLogout }) => {
     }
 
     // Redirect the user to the login page
-    navigate('/');
+    navigate('/login');
   }, [onLogout, navigate]);
 
   return (
