@@ -6,7 +6,6 @@ import { useLocation } from 'react-router-dom';
 import { OPEN_OPS_ST10_URL } from '../../../utils/apiUrls';
 import { SUBMIT_OPS_ST10_URL } from '../../../utils/apiUrls';
 import { useNavigate } from 'react-router-dom';
-import {HOLD_OPS_ST10_URL} from '../../../utils/apiUrls';
 
 
 const Assemblyop = () => {
@@ -24,10 +23,7 @@ const Assemblyop = () => {
   const [fipNo, setFipNo] = useState('');
   const [turboNo, setTurboNo] = useState('');
   const [remark, setRemark] = useState('');
-  const [holdRemark, setHoldRemark] = useState('');
-  const [holdStatus, setHoldStatus] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isEditable = stno !== '12'; 
 
     const currentTimeStamp = new Date().toLocaleString('en-US', {
       timeZone: 'Asia/Kolkata'
@@ -40,39 +36,34 @@ const Assemblyop = () => {
   }, [esn, stno]);
 
   const fetchData = useCallback(async () => {
-    if (hasFetchedData.current) return; // Prevent double fetch
-  
-    if (!esn || !stno) {
-      console.error('ESN or STNO is missing');
-      setError('ESN or STNO is missing');
-      return;
-    }
-  
-    hasFetchedData.current = true; // Set flag to true after the first call
-  
-    try {
-      const { csrfToken } = getSessionData();
-      const response = await axios.post(OPEN_OPS_ST10_URL, {
-        esn,
-        stno,
-      }, {
-        headers: {
-          'X-CSRFToken': csrfToken
-        },
-        withCredentials: true
-      });
-  
-      setResultData(response.data);
-      if (stno === '10' && response.data.hold_remark) {
-        setHoldRemark(response.data.hold_remark);
-        setHoldStatus(response.data.hold_status || false); // Ensure holdStatus is set
+      if (hasFetchedData.current) return; // Prevent double fetch
+
+      if (!esn || !stno) {
+          console.error('ESN or STNO is missing');
+          setError('ESN or STNO is missing');
+          return;
       }
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Error fetching data');
-    }
+
+      hasFetchedData.current = true; // Set flag to true after the first call
+
+      try {
+          const { csrfToken } = getSessionData();
+          const response = await axios.post(OPEN_OPS_ST10_URL, {
+              esn,
+              stno,
+          }, {
+              headers: {
+                  'X-CSRFToken': csrfToken
+              },
+              withCredentials: true
+          });
+
+          setResultData(response.data);
+      } catch (error) {
+          console.error('Error:', error);
+          setError('Error fetching data');
+      }
   }, [getSessionData, esn, stno]);
-  
 
   useEffect(() => {
       document.title = "Result";
@@ -98,14 +89,9 @@ const Assemblyop = () => {
       fipNo: fipNo,
       turboNo: turboNo,
       remark: remark,
-      bom: bom,
-      status: true,
-      holdRemark: holdRemark,
-      holdStatus: holdStatus
+      bom: bom
       
     };
-    console.log('Form data:', formData);
-
 
     if (!crankCaseNo.trim() || !fipNo.trim() || !turboNo.trim() || !remark.trim()) {
       alert('All fields must be filled out before submitting.');
@@ -149,86 +135,8 @@ const Assemblyop = () => {
     }
 };
 
-const handleHoldClick = async () => {
-  if (isSubmitting) return;
-  setIsSubmitting(true);
-
-  const csrfToken = sessionStorage.getItem('csrfToken');
-
-  const formData = {
-    stno: resultData.header_data.stno,        
-    esn: resultData.header_data.esn,         
-    engmodel: resultData.header_data.engmodel,
-    engtype: resultData.header_data.type,      
-    currentTimeStamp: currentTimeStamp,
-    userId: userId,
-    userName: username,
-    crankCaseNo: crankCaseNo,
-    fipNo: fipNo,
-    turboNo: turboNo,
-    remark: remark,
-    bom: bom,
-    status: false, // Set status to false for Hold
-    holdRemark: holdRemark,
-    holdStatus: holdStatus
+  const handleHoldClick = () => {
   };
-  console.log('Form data:', formData);
-
-
-  try {
-    const response = await axios.post(
-      HOLD_OPS_ST10_URL,
-      formData,
-      {
-        headers: {
-          'X-CSRFToken': csrfToken
-        },
-        withCredentials: true
-      }
-    );
-    if (response.data.status === 'success') {
-      window.alert(`Engine ${formData.esn} on hold.`);
-      window.close();
-    } else {
-      console.error('Error submitting hold data:', response.data.message);
-      window.alert('Hold submission aborted, please check for errors.');
-      window.close();
-    }
-  } catch (error) {
-    console.error('Error submitting hold data:', error);
-    window.alert('Issue from server, please check for debug file.');
-    window.close();
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-
-// const handleHoldStatusChange = (event) => {
-//   const isChecked = event.target.checked;
-
-//   if (resultData) { // Check if resultData is not null
-//     const updatedResultData = {
-//       ...resultData,
-//       header_data: {
-//         ...resultData.header_data,
-//         // hold_status: isChecked, // Set hold_status to true or false
-//       }
-//     };
-//     setResultData(updatedResultData);
-//   }
-// };
-
-const handleHoldStatusChange = (event) => {
-  const isChecked = event.target.checked;
-  setHoldStatus(isChecked);
-}
-
-if (!resultData) {
-  return <div className="container2">Loading...</div>;
-}
-
-
 
   return (
     <div className="container2">
@@ -325,22 +233,20 @@ if (!resultData) {
                 <tr>
                   <th>FIP No</th>
                   <td><input type="text" className="form-control" placeholder="Enter FIP No"
-                  value={fipNo} onChange={(e) => setFipNo(e.target.value)}/>
+                  value={fipNo} onChange={(e) => setFipNo(e.target.value)} />
                   </td>
                 </tr>
                 <tr>
                   <th>Turbo No</th>
                   <td><input type="text" className="form-control" placeholder="Enter Turbo No"
-                  value={turboNo} onChange={(e) => setTurboNo(e.target.value)}/>
+                  value={turboNo} onChange={(e) => setTurboNo(e.target.value)} />
                   </td>
                 </tr>
                 <tr>
                   <th>Remark</th>
                   <td><input type="text" className="form-control" placeholder="Enter Remark"
-                  value={remark} onChange={(e) => setRemark(e.target.value)}/>
+                  value={remark} onChange={(e) => setRemark(e.target.value)} />
                   </td>
-                  <tr>
-                </tr>
                 </tr>
               </tbody>
             </table>
@@ -348,92 +254,17 @@ if (!resultData) {
         </div>
       </div>
 
-      {/* <div className="row justify-content-center mb-4">
+      <div className="row justify-content-center mb-4">
         <div className="col-auto">
           <button className="btn btn-success" onClick={handleRollDownSubmit}>
             Roll Down
           </button>
         </div>
-      </div> */}
-
-      <div className="row justify-content-center mt-3">
-        <button className="btn btn-success" onClick={handleRollDownSubmit}>Roll Down</button>
-      </div>
-
-      <div className="row justify-content-center align-items-center mt-4 mb-4">
-        <div className="row mx-4">
-          <div className="table-responsive">
-          <table className="table table-bordered">
-          <tbody>
-          {isEditable && (
-            <>
-              <tr>
-                <th>Hold Remark</th>
-                <td>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter Hold Remark"
-                    value={holdRemark}
-                    onChange={(e) => setHoldRemark(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Hold Status</th>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={holdStatus}
-                    onChange={handleHoldStatusChange}
-                  />
-                </td>
-              </tr>
-            </>
-          )}
-                {!isEditable &&  (
-                  <tr>
-                    <th>Hold Remark</th>
-                    <td>{resultData.header_data?.hold_remark || 'N/A'}</td>
-                  </tr>
-                )}
-              </tbody>
-          {/* <tbody>
-                <tr>
-                  <th>Hold Remark </th>
-                  <td><input type="text" className="form-control" placeholder="Enter Enter Hold Remark" 
-                  value={holdRemark} onChange={(e) => setHoldRemark(e.target.value)}/>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Hold Status </th>
-                  <td><input type="text" className="form-control" placeholder="Enter Hold Status"
-                  value={holdStatus} onChange={(e) => setHoldStatus(e.target.value)} />
-                  </td>
-                </tr>
-              </tbody> */}
-            
-              </table>    
-          </div>
-        </div>
-      </div>
-
-      {/* <div className="col-auto">
+        <div className="col-auto">
           <button className="btn btn-warning" onClick={handleHoldClick}>
             Hold
           </button>
-        </div> */}
-
-    {/* <div className="row justify-content-center mb-4">
-      <div className="col-auto">
-        <button className="btn btn-warning" onClick={handleHoldClick}>
-          Hold
-        </button>
-      </div>
-    </div> */}
-
-    <div className="row justify-content-center mt-3">
-        <button className="btn btn-warning" onClick={handleHoldClick}>Hold</button>
+        </div>
       </div>
 
       <hr className="hr2" style={{ padding: '0', marginTop: '10px', marginBottom: '0px' }} />

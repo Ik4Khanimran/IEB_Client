@@ -25,7 +25,7 @@ const Assemblyop = () => {
   const [turboNo, setTurboNo] = useState('');
   const [remark, setRemark] = useState('');
   const [holdRemark, setHoldRemark] = useState('');
-  const [holdStatus, setHoldStatus] = useState(false);
+  const [holdStatus, setHoldStatus] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditable = stno !== '12'; 
 
@@ -40,39 +40,34 @@ const Assemblyop = () => {
   }, [esn, stno]);
 
   const fetchData = useCallback(async () => {
-    if (hasFetchedData.current) return; // Prevent double fetch
-  
-    if (!esn || !stno) {
-      console.error('ESN or STNO is missing');
-      setError('ESN or STNO is missing');
-      return;
-    }
-  
-    hasFetchedData.current = true; // Set flag to true after the first call
-  
-    try {
-      const { csrfToken } = getSessionData();
-      const response = await axios.post(OPEN_OPS_ST10_URL, {
-        esn,
-        stno,
-      }, {
-        headers: {
-          'X-CSRFToken': csrfToken
-        },
-        withCredentials: true
-      });
-  
-      setResultData(response.data);
-      if (stno === '10' && response.data.hold_remark) {
-        setHoldRemark(response.data.hold_remark);
-        setHoldStatus(response.data.hold_status || false); // Ensure holdStatus is set
+      if (hasFetchedData.current) return; // Prevent double fetch
+
+      if (!esn || !stno) {
+          console.error('ESN or STNO is missing');
+          setError('ESN or STNO is missing');
+          return;
       }
-    } catch (error) {
-      console.error('Error:', error);
-      setError('Error fetching data');
-    }
+
+      hasFetchedData.current = true; // Set flag to true after the first call
+
+      try {
+          const { csrfToken } = getSessionData();
+          const response = await axios.post(OPEN_OPS_ST10_URL, {
+              esn,
+              stno,
+          }, {
+              headers: {
+                  'X-CSRFToken': csrfToken
+              },
+              withCredentials: true
+          });
+
+          setResultData(response.data);
+      } catch (error) {
+          console.error('Error:', error);
+          setError('Error fetching data');
+      }
   }, [getSessionData, esn, stno]);
-  
 
   useEffect(() => {
       document.title = "Result";
@@ -203,33 +198,6 @@ const handleHoldClick = async () => {
   }
 };
 
-
-// const handleHoldStatusChange = (event) => {
-//   const isChecked = event.target.checked;
-
-//   if (resultData) { // Check if resultData is not null
-//     const updatedResultData = {
-//       ...resultData,
-//       header_data: {
-//         ...resultData.header_data,
-//         // hold_status: isChecked, // Set hold_status to true or false
-//       }
-//     };
-//     setResultData(updatedResultData);
-//   }
-// };
-
-const handleHoldStatusChange = (event) => {
-  const isChecked = event.target.checked;
-  setHoldStatus(isChecked);
-}
-
-if (!resultData) {
-  return <div className="container2">Loading...</div>;
-}
-
-
-
   return (
     <div className="container2">
       <div className="row justify-content-center align-items-center">
@@ -348,16 +316,17 @@ if (!resultData) {
         </div>
       </div>
 
-      {/* <div className="row justify-content-center mb-4">
+      <div className="row justify-content-center mb-4">
         <div className="col-auto">
           <button className="btn btn-success" onClick={handleRollDownSubmit}>
             Roll Down
           </button>
         </div>
-      </div> */}
-
-      <div className="row justify-content-center mt-3">
-        <button className="btn btn-success" onClick={handleRollDownSubmit}>Roll Down</button>
+        <div className="col-auto">
+          <button className="btn btn-warning" onClick={handleHoldClick}>
+            Hold
+          </button>
+        </div>
       </div>
 
       <div className="row justify-content-center align-items-center mt-4 mb-4">
@@ -365,40 +334,6 @@ if (!resultData) {
           <div className="table-responsive">
           <table className="table table-bordered">
           <tbody>
-          {isEditable && (
-            <>
-              <tr>
-                <th>Hold Remark</th>
-                <td>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter Hold Remark"
-                    value={holdRemark}
-                    onChange={(e) => setHoldRemark(e.target.value)}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <th>Hold Status</th>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={holdStatus}
-                    onChange={handleHoldStatusChange}
-                  />
-                </td>
-              </tr>
-            </>
-          )}
-                {!isEditable &&  (
-                  <tr>
-                    <th>Hold Remark</th>
-                    <td>{resultData.header_data?.hold_remark || 'N/A'}</td>
-                  </tr>
-                )}
-              </tbody>
-          {/* <tbody>
                 <tr>
                   <th>Hold Remark </th>
                   <td><input type="text" className="form-control" placeholder="Enter Enter Hold Remark" 
@@ -411,29 +346,11 @@ if (!resultData) {
                   value={holdStatus} onChange={(e) => setHoldStatus(e.target.value)} />
                   </td>
                 </tr>
-              </tbody> */}
+              </tbody>
             
               </table>    
           </div>
         </div>
-      </div>
-
-      {/* <div className="col-auto">
-          <button className="btn btn-warning" onClick={handleHoldClick}>
-            Hold
-          </button>
-        </div> */}
-
-    {/* <div className="row justify-content-center mb-4">
-      <div className="col-auto">
-        <button className="btn btn-warning" onClick={handleHoldClick}>
-          Hold
-        </button>
-      </div>
-    </div> */}
-
-    <div className="row justify-content-center mt-3">
-        <button className="btn btn-warning" onClick={handleHoldClick}>Hold</button>
       </div>
 
       <hr className="hr2" style={{ padding: '0', marginTop: '10px', marginBottom: '0px' }} />

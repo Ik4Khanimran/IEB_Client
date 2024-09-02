@@ -25,7 +25,6 @@ const Home = () => {
     try {
       const response = await axios.post(HOME_GET_DATA_URL, { year, month });
       if (response.data.status === "success") {
-        console.log('API Response:', response.data);
         setData_Xcl(response.data.data_xcl);
         setData_CSR(response.data.data_csr);
         setData_Test(response.data.data_test);  // Ensure correct field names
@@ -57,7 +56,7 @@ const Home = () => {
       fetchData(year, month);
     }
   };
-  // chart for CSR
+
   const prepareChartData = () => {
     const esnCountMap = new Map();
     data_csr.forEach(item => {
@@ -74,27 +73,24 @@ const Home = () => {
     console.log('CSR Chart Data:', chartData);
     return chartData;
   };
-  //  Chart for assembly
-    const prepareAsslyChartData = () => {
-      const esnCountMap = new Map();
-      data_assly.forEach(item => {
-        const date = item.timestamp.split('T')[0];
-        const dayNumber = new Date(date).getDate();
-        esnCountMap.set(dayNumber, (esnCountMap.get(dayNumber) || 0) + 1);
-      });
-  
-      const chartData = Array.from(esnCountMap, ([dayNumber, engine_count]) => ({
-        dayNumber,
-        "No of Engines": engine_count
-      }));
-  
-      console.log('Assembly Chart Data:', chartData);
-      return chartData;
-    };
-  
- 
-  
-  // Chart for Test
+
+  const prepareAsslyChartData = () => {
+    const esnCountMap = new Map();
+    data_assly.forEach(item => {
+      const date = item.st10_date.split('T')[0];
+      const dayNumber = new Date(date).getDate();
+      esnCountMap.set(dayNumber, (esnCountMap.get(dayNumber) || 0) + 1);
+    });
+
+    const chartData = Array.from(esnCountMap, ([dayNumber, engine_count]) => ({
+      dayNumber,
+      "No of Engines": engine_count
+    }));
+
+    console.log('Assembly Chart Data:', chartData);
+    return chartData;
+  };
+
   const prepareTestChartData = () => {
     const esnCountMap = new Map();
     data_test.forEach(item => {
@@ -125,38 +121,38 @@ const Home = () => {
     XLSX.writeFile(wb, "engine_xcl.xlsx");
   };
 
-  // Filter dataset_01 based on selected BOM
-  const filteredDataset = selectedBom
-  ? dataset_01.filter(item => item.bom === selectedBom)
-  : dataset_01;
+// Filter dataset_01 based on selected BOM
+const filteredDataset = selectedBom
+? dataset_01.filter(item => item.bom === selectedBom)
+: dataset_01;
 
-  // Initialize locCounts with all location values set to 0
-  const locCounts = {
-  1: 0, 2: 0, 5: 0, 10: 0, 12: 0, 14: 0, 20: 0, 22: 0, 24: 0, 30: 0, 32: 0, 35: 0, 40: 0, 42: 0,
-  };
+// Initialize locCounts with all location values set to 0
+const locCounts = {
+1: 0, 2: 0, 5: 0, 10: 0, 12: 0, 14: 0, 20: 0, 22: 0, 24: 0, 30: 0, 32: 0, 35: 0, 40: 0, 42: 0,
+};
 
-  // Populate the locCounts object with data from filteredDataset
-  filteredDataset.forEach(item => {
-  if (item.cur_loc in locCounts) {
-    locCounts[item.cur_loc] += item.count || 0; // Default to 0 if count is missing
-  }
-  });
+// Populate the locCounts object with data from filteredDataset
+filteredDataset.forEach(item => {
+if (item.cur_loc in locCounts) {
+  locCounts[item.cur_loc] += item.count || 0; // Default to 0 if count is missing
+}
+});
 
-  // Extract values for display
-  const V_PPC = locCounts[1];
-  const V_Store = locCounts[2];
-  const V_Trolley = locCounts[5];
-  const V_A_Inprocess = locCounts[10];
-  const V_A_Rework = locCounts[12];
-  const V_A_Quality = locCounts[14];
-  const V_T_Inprocess = locCounts[20];
-  const V_T_Rework = locCounts[22];
-  const V_T_Quality = locCounts[24];
-  const V_CSR_Inprocess = locCounts[30];
-  const V_CSR_Rework = locCounts[32];
-  const V_CSR_Qualitycheck = locCounts[35];
-  const V_Packaging_Inprocess = locCounts[40];
-  const V_FG = locCounts[42];
+// Extract values for display
+const V_PPC = locCounts[1];
+const V_Store = locCounts[2];
+const V_Trolley = locCounts[5];
+const V_A_Inprocess = locCounts[10];
+const V_A_Rework = locCounts[12];
+const V_A_Quality = locCounts[14];
+const V_T_Inprocess = locCounts[20];
+const V_T_Rework = locCounts[22];
+const V_T_Quality = locCounts[24];
+const V_CSR_Inprocess = locCounts[30];
+const V_CSR_Rework = locCounts[32];
+const V_CSR_Qualitycheck = locCounts[35];
+const V_Packaging_Inprocess = locCounts[40];
+const V_FG = locCounts[42];
 
   return (
     <div>       

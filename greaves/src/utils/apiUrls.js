@@ -37,5 +37,6 @@ export const UPDATE_LOCATION_URL = `${MAIN_DOMAIN}/${APP_NAMES.Operations}/updat
 export const OPEN_OPS_ST10_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/opn_ops_st10/`;
 export const SUBMIT_OPS_ST10_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/assemblyop_submit/`;
 export const GET_ASSEMBLYOP_DATA_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/get_assemblyop_result/`;
+export const HOLD_OPS_ST10_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/assemblyop_hold/`;
 
 // Add more URLs as needed

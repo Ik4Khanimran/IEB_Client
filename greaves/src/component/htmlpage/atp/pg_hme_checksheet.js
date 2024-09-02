@@ -54,6 +54,11 @@ const Hme_checksheet = () => {
             const url = `/assemblyop?esn=${encodeURIComponent(esn)}&stno=${encodeURIComponent(stno)}`;
             window.open(url, '_blank');
           }
+          if(encodeURIComponent(stno) == '12'){
+            console.log("Let open page for Station 10")
+            const url = `/assemblyop?esn=${encodeURIComponent(esn)}&stno=${encodeURIComponent(stno)}`;
+            window.open(url, '_blank');
+          }
           
       } else {
         window.alert(response.data.message);
