@@ -27,11 +27,13 @@ const Assemblyop = () => {
   const [holdRemark, setHoldRemark] = useState('');
   const [holdStatus, setHoldStatus] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const isEditable = stno !== '12'; 
+  
 
-    const currentTimeStamp = new Date().toLocaleString('en-US', {
-      timeZone: 'Asia/Kolkata'
-    }); 
+  const currentTimeStamp = new Date().toLocaleString('en-US', {
+    timeZone: 'Asia/Kolkata'
+  }); 
 
   const navigate = useNavigate();  
   const getSessionData = useCallback(() => {
@@ -41,15 +43,15 @@ const Assemblyop = () => {
 
   const fetchData = useCallback(async () => {
     if (hasFetchedData.current) return; // Prevent double fetch
-  
+
     if (!esn || !stno) {
       console.error('ESN or STNO is missing');
       setError('ESN or STNO is missing');
       return;
     }
-  
+
     hasFetchedData.current = true; // Set flag to true after the first call
-  
+
     try {
       const { csrfToken } = getSessionData();
       const response = await axios.post(OPEN_OPS_ST10_URL, {
@@ -61,11 +63,15 @@ const Assemblyop = () => {
         },
         withCredentials: true
       });
-  
+
       setResultData(response.data);
-      if (stno === '10' && response.data.hold_remark) {
-        setHoldRemark(response.data.hold_remark);
-        setHoldStatus(response.data.hold_status || false); // Ensure holdStatus is set
+      if (stno === '10' || stno === '12') {
+        setHoldRemark(response.data.header_data.hold_remark || '');
+        setHoldStatus(response.data.header_data.hold_status || false);
+        console.log(response.data.header_data.hold_status)
+        setFipNo(response.data.header_data.fip_no);
+        setCrankCaseNo(response.data.header_data.cranckcase_no);
+        setTurboNo(response.data.header_data.turbo_no)
       }
     } catch (error) {
       console.error('Error:', error);
@@ -94,20 +100,21 @@ const Assemblyop = () => {
       currentTimeStamp: currentTimeStamp,
       userId: userId,
       userName: username,
-      crankCaseNo: crankCaseNo,
-      fipNo: fipNo,
-      turboNo: turboNo,
-      remark: remark,
+      crankCaseNo: crankCaseNo ? crankCaseNo.trim() : '', // Use empty string if null
+      fipNo: fipNo ? fipNo.trim() : '',                   // Use empty string if null
+      turboNo: turboNo ? turboNo.trim() : '',             // Use empty string if null
+      remark: remark ? remark.trim() : '',                // Use empty string if null
       bom: bom,
       status: true,
-      holdRemark: holdRemark,
-      holdStatus: holdStatus
-      
+      holdRemark: resultData.header_data?.hold_remark ? resultData.header_data.hold_remark.trim() : '',
+      holdStatus: resultData.header_data?.hold_status || false,
+      holdCrankcaseNo: crankCaseNo ? crankCaseNo.trim() : '',
+      holdFipNo: resultData.header_data?.fip_no ? resultData.header_data.fip_no.trim() : '',
+      holdTurboNo: resultData.header_data?.turbo_no ? resultData.header_data.turbo_no.trim() : '',
     };
     console.log('Form data:', formData);
 
-
-    if (!crankCaseNo.trim() || !fipNo.trim() || !turboNo.trim() || !remark.trim()) {
+    if (!formData.crankCaseNo || !formData.fipNo || !formData.turboNo || !formData.remark) {
       alert('All fields must be filled out before submitting.');
       setIsSubmitting(false);
       return;
@@ -149,6 +156,7 @@ const Assemblyop = () => {
     }
 };
 
+
 const handleHoldClick = async () => {
   if (isSubmitting) return;
   setIsSubmitting(true);
@@ -163,16 +171,32 @@ const handleHoldClick = async () => {
     currentTimeStamp: currentTimeStamp,
     userId: userId,
     userName: username,
-    crankCaseNo: crankCaseNo,
-    fipNo: fipNo,
-    turboNo: turboNo,
-    remark: remark,
+    crankCaseNo: crankCaseNo ? crankCaseNo.trim() : '',
+    fipNo: fipNo ? fipNo.trim() : '',
+    turboNo: turboNo ? turboNo.trim() : '',
+    remark: remark ? remark.trim() : '',
     bom: bom,
-    status: false, // Set status to false for Hold
-    holdRemark: holdRemark,
-    holdStatus: holdStatus
+    status: false,
+    holdRemark: holdRemark ? holdRemark.trim() : '',
+    holdStatus: holdStatus || false,
+    holdCrankcaseNo: crankCaseNo ? crankCaseNo.trim() : '',
+    holdFipNo: resultData.header_data?.fip_no ? resultData.header_data.fip_no.trim() : '',
+    holdTurboNo: resultData.header_data?.turbo_no ? resultData.header_data.turbo_no.trim() : '',
+    
   };
   console.log('Form data:', formData);
+
+  if (!formData.holdRemark || !formData.holdStatus ) {
+    alert('All fields must be filled out before submitting.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  // if (!holdRemark.trim() || !holdStatus === undefined) {
+  //   alert('All fields must be filled out before submitting.');
+  //   setIsSubmitting(false);
+  //   return;
+  // }
 
 
   try {
@@ -204,21 +228,6 @@ const handleHoldClick = async () => {
 };
 
 
-// const handleHoldStatusChange = (event) => {
-//   const isChecked = event.target.checked;
-
-//   if (resultData) { // Check if resultData is not null
-//     const updatedResultData = {
-//       ...resultData,
-//       header_data: {
-//         ...resultData.header_data,
-//         // hold_status: isChecked, // Set hold_status to true or false
-//       }
-//     };
-//     setResultData(updatedResultData);
-//   }
-// };
-
 const handleHoldStatusChange = (event) => {
   const isChecked = event.target.checked;
   setHoldStatus(isChecked);
@@ -227,8 +236,6 @@ const handleHoldStatusChange = (event) => {
 if (!resultData) {
   return <div className="container2">Loading...</div>;
 }
-
-
 
   return (
     <div className="container2">
@@ -306,6 +313,60 @@ if (!resultData) {
         </div>
       </div>
 
+      {stno === '12' && (
+  <div className="row justify-content-center align-items-center mt-4 mb-4">
+    <div className="row mx-4">
+      <div className="table-responsive">
+        <table className="table table-bordered">
+          <thead className="thead-dark">
+            <tr>
+              <th colSpan="6" className="text-center">Engine Hold Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {resultData ? (
+              <>
+                <tr>
+                  <th>Hold Status</th>
+                  <td>
+                    <input
+                      type="checkbox"
+                      className="custom-checkbox"
+                      checked={resultData.header_data?.hold_status === true}
+                      disabled
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <th>Hold Remark</th>
+                  <td>{resultData.header_data?.hold_remark || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <th>Hold Operator ID</th>
+                  <td>{userId || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <th>Hold Date and Time</th>
+                  <td>{currentTimeStamp || 'N/A'}</td>
+                </tr>
+              </>
+            ) : error ? (
+              <tr>
+                <td colSpan="6" className="text-center text-danger">{error}</td>
+              </tr>
+            ) : (
+              <tr>
+                <td colSpan="6" className="text-center">Loading...</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+)}
+
+
       <div className="row justify-content-center align-items-center mt-4 mb-4">
         <div className="row mx-4">
           <div className="table-responsive">
@@ -348,14 +409,6 @@ if (!resultData) {
         </div>
       </div>
 
-      {/* <div className="row justify-content-center mb-4">
-        <div className="col-auto">
-          <button className="btn btn-success" onClick={handleRollDownSubmit}>
-            Roll Down
-          </button>
-        </div>
-      </div> */}
-
       <div className="row justify-content-center mt-3">
         <button className="btn btn-success" onClick={handleRollDownSubmit}>Roll Down</button>
       </div>
@@ -391,50 +444,17 @@ if (!resultData) {
               </tr>
             </>
           )}
-                {!isEditable &&  (
-                  <tr>
-                    <th>Hold Remark</th>
-                    <td>{resultData.header_data?.hold_remark || 'N/A'}</td>
-                  </tr>
-                )}
               </tbody>
-          {/* <tbody>
-                <tr>
-                  <th>Hold Remark </th>
-                  <td><input type="text" className="form-control" placeholder="Enter Enter Hold Remark" 
-                  value={holdRemark} onChange={(e) => setHoldRemark(e.target.value)}/>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Hold Status </th>
-                  <td><input type="text" className="form-control" placeholder="Enter Hold Status"
-                  value={holdStatus} onChange={(e) => setHoldStatus(e.target.value)} />
-                  </td>
-                </tr>
-              </tbody> */}
-            
               </table>    
           </div>
         </div>
       </div>
 
-      {/* <div className="col-auto">
-          <button className="btn btn-warning" onClick={handleHoldClick}>
-            Hold
-          </button>
-        </div> */}
-
-    {/* <div className="row justify-content-center mb-4">
-      <div className="col-auto">
-        <button className="btn btn-warning" onClick={handleHoldClick}>
-          Hold
-        </button>
-      </div>
-    </div> */}
-
-    <div className="row justify-content-center mt-3">
-        <button className="btn btn-warning" onClick={handleHoldClick}>Hold</button>
-      </div>
+      {stno !== '12' && (
+        <div className="row justify-content-center mt-3">
+          <button className="btn btn-warning" onClick={handleHoldClick}>Hold</button>
+        </div>
+      )}
 
       <hr className="hr2" style={{ padding: '0', marginTop: '10px', marginBottom: '0px' }} />
     </div>
