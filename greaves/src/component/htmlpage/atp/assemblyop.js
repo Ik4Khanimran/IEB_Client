@@ -72,6 +72,13 @@ const Assemblyop = () => {
         setFipNo(response.data.header_data.fip_no);
         setCrankCaseNo(response.data.header_data.cranckcase_no);
         setTurboNo(response.data.header_data.turbo_no)
+
+        // Check if station 10 is on hold
+      if (stno === '10' && response.data.header_data.hold_status) {
+        window.alert('Checksheet for station 10 is on hold.');
+        // Optionally, you can redirect or perform other actions here
+        navigate('/'); // Redirect to another page, e.g., home
+      }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -87,7 +94,7 @@ const Assemblyop = () => {
 
   const handleRollDownSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting ) return;
     setIsSubmitting(true); 
 
     const csrfToken = sessionStorage.getItem('csrfToken');
@@ -158,7 +165,7 @@ const Assemblyop = () => {
 
 
 const handleHoldClick = async () => {
-  if (isSubmitting) return;
+  if (isSubmitting ) return;
   setIsSubmitting(true);
 
   const csrfToken = sessionStorage.getItem('csrfToken');
