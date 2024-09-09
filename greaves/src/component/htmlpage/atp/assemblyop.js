@@ -199,13 +199,6 @@ const handleHoldClick = async () => {
     return;
   }
 
-  // if (!holdRemark.trim() || !holdStatus === undefined) {
-  //   alert('All fields must be filled out before submitting.');
-  //   setIsSubmitting(false);
-  //   return;
-  // }
-
-
   try {
     const response = await axios.post(
       HOLD_OPS_ST10_URL,
