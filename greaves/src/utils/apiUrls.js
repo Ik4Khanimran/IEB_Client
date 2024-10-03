@@ -10,7 +10,8 @@ const APP_NAMES = {
   User: 'User',
   Common: 'Common',
   Dashboard: 'Dashboard',
-  Operations : 'Operations'
+  Operations : 'Operations',
+  Quality : 'Quality'
 };
 
 export const LOGIN_URL = `${MAIN_DOMAIN}/${APP_NAMES.User}/login/`;
@@ -38,5 +39,26 @@ export const OPEN_OPS_ST10_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/opn_ops_st10/`
 export const SUBMIT_OPS_ST10_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/assemblyop_submit/`;
 export const GET_ASSEMBLYOP_DATA_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/get_assemblyop_result/`;
 export const HOLD_OPS_ST10_URL = `${MAIN_DOMAIN}/${APP_NAMES.ATP}/assemblyop_hold/`;
+// export const ADD_CAL_AGENCY_URL = '${MAIN_DOMAIN}/add_cal_agency/';
+export const ADD_CAL_AGENCY_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/add_cal_agency/`;
+export const GET_CAL_AGENCY_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/get_cal_agencies/`;
+export const DELETE_CAL_AGENCY_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_cal_agency/`;
+export const UPDATE_CAL_AGENCY_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/edit_cal_agency/`; 
+
+export const ADD_GAUGE_TYPE_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/add_gauge_type/`;
+export const GET_GAUGE_TYPE_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/get_gauge_type/`;
+export const DELETE_GAUGE_TYPE_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_gauge_type/`;
+export const UPDATE_GAUGE_TYPE_URL =  `${MAIN_DOMAIN}/${APP_NAMES.Quality}/edit_gauge_type/`;
+
+export const ADD_CAL_LOCATION_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/add_location/`;
+export const GET_CAL_LOCATION_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/get_location/`;
+export const DELETE_CAL_LOCATION_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_location/`;
+export const UPDATE_CAL_LOCATION_URL =  `${MAIN_DOMAIN}/${APP_NAMES.Quality}/edit_location/`;
+
+export const ADD_CAL_STATUS_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/add_cal_status/`;
+export const GET_CAL_STATUS_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/get_cal_status/`;
+export const DELETE_CAL_STATUS_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_cal_status/`;
+export const UPDATE_CAL_STATUS_URL =  `${MAIN_DOMAIN}/${APP_NAMES.Quality}/edit_cal_status/`;
+
 
 // Add more URLs as needed

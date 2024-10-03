@@ -19,21 +19,6 @@ const Header = () => {
     }
   }, []);
 
-  // const handleLogout = () => {
-  //   // Clear session storage and redirect to logout page
-  //   document.cookie = 'csrftoken=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;';
-  //   window.location.href = '/logout'; // Replace '/logout' with your logout endpoint
-  //   sessionStorage.removeItem('token');
-  //   sessionStorage.removeItem('name');
-  //   sessionStorage.removeItem('role');
-  //   sessionStorage.clear();
-    
-  //   // Redirect to the login page
-  //   setIsLoggedIn(false);
-  // };
-
-
-
 
   return (
     <header>

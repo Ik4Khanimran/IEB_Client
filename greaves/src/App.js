@@ -23,6 +23,11 @@ import UserEditEntry from './component/htmlpage/user_list/usereditentry';
 import Assemblyop from './component/htmlpage/atp/assemblyop';
 import NewPage from './component/htmlpage/atp/newpage';
 import Assemblyopresult from './component/htmlpage/atp/assemblyopresult'
+import CalAgencyTable from './component/htmlpage/quality/cal_agency_table'; // Adjust the path accordingly
+import CalAgencyNewEntry from './component/htmlpage/quality/cal_agency_newentry';
+// import CalAgencyEdit from './component/htmlpage/quality/cal_agency_edit';
+
+
 
 
 
@@ -47,7 +52,7 @@ function App() {
         />
 
         <Route path="/home" element={isLoggedIn ? <Layout><Home /></Layout> : <Navigate to="/" replace />} />
-        {/* <Route path="/home"  element={<Home />} /> */}
+        <Route path="/home"  element={<Home />} />
 
 
         <Route path="/about" element={isLoggedIn ? <Layout><About /></Layout> : <Navigate to="/" replace />} />
@@ -60,6 +65,8 @@ function App() {
 
         <Route path="/updatedatabase" element={isLoggedIn ? <Layout><UpdateBD /></Layout> : <Navigate to="/" replace />} />
         <Route path="/user" element={isLoggedIn ? <Layout><User /></Layout> : <Navigate to="/" replace />} />
+        <Route path="/cal_agency_table" element={isLoggedIn ? <Layout><CalAgencyTable /></Layout> : <Navigate to="/" replace />} />
+
         <Route path="/newtab" element={<NewTabPage />} />
         <Route path="/openchecksheet" element={<OpenChecksheet />} />
         <Route path="/resultchecksheet" element={<Resultchecksheet />} />
@@ -76,6 +83,8 @@ function App() {
         <Route path="/" element={<Assemblyop />} />
         <Route path="/new-page" element={<NewPage />} />
         <Route path="/assemblyopresult" element={<Assemblyopresult />} />
+        <Route path="/cal_agency_newentry" element={<CalAgencyNewEntry />} />
+        {/* <Route path="/cal_agency_edit/:id" element={<CalAgencyEdit />} /> */}
 
       </Routes>
     </BrowserRouter>

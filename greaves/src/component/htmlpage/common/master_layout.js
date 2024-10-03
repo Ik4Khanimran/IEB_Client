@@ -7,11 +7,13 @@ import Home from './home';
 import About from './about';
 import Operation from './operations';
 import Spare from './spare_01';
+import CalAgencyTable from '../quality/cal_agency_table';
 import Hmechecksheet from '../atp/pg_hme_checksheet';
 import UpdateDB from '../atp/database';
 import User from '../user_list/user';
 import '../../csspage/styles.css';
 import Logout from '../common/logout';
+// import Table from '../quality/table';
 
 const Layout = () => {
   const location = useLocation();
@@ -26,6 +28,8 @@ const Layout = () => {
     '/updatedatabase': <UpdateDB />,
     '/user': <User />,
     '/logout': <Logout />,
+    '/cal_agency_table': <CalAgencyTable />,
+    // '/table' : <Table/>
     // Add more routes here
   };
 

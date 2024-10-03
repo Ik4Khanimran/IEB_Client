@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../../utils/axiosConfig';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { DATA_URL, CHECKSHEET_DROPDOWNVALUE_URL, OPEN_OPS_ST10_URL } from '../../../utils/apiUrls';
+import { DATA_URL, CHECKSHEET_DROPDOWNVALUE_URL } from '../../../utils/apiUrls';
 import BarcodeScanner from '../common/barcodescanner.js';
 
 const Hme_checksheet = () => {

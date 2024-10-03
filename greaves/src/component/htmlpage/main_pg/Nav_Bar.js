@@ -32,6 +32,22 @@ const NavBar = ({ activeTab }) => {
                 Spare12
               </NavDropdown.Item>
             </NavDropdown>
+            
+            {/* Quality Dropdown with Calibration Submenu */}
+            <NavDropdown title="Quality" id="quality-nav-dropdown" className={activeTab === 'quality' ? 'active' : ''} drop="end">
+              {/* Calibration Dropdown */}
+              <NavDropdown title="Calibration" id="calibration-nav-dropdown" className={activeTab === 'calibration' ? 'active' : ''} drop="end">
+                <NavDropdown.Item as={Link} to="/calibration/cal_dashboard" className={activeTab === 'calibration-dashboard' ? 'active' : ''}>
+                  Dashboard
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/calibration/report" className={activeTab === 'calibration-report' ? 'active' : ''}>
+                  Calibration Report
+                </NavDropdown.Item>
+                <NavDropdown.Item as={Link} to="/cal_agency_table" className={activeTab === 'calibration-table' ? 'active' : ''}>
+                  Calibration Table
+                </NavDropdown.Item>
+              </NavDropdown>
+            </NavDropdown>
             <Nav.Link as={Link} to="/spare" className={activeTab === 'spare' ? 'active' : ''}>
               Spare
             </Nav.Link>

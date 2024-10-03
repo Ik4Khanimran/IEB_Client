@@ -58,6 +58,30 @@ const Home = () => {
     }
   };
   // chart for CSR
+//   const prepareChartData = () => {
+//     const esnCountMap = new Map();
+//     const uniqueSet = new Set(); // Track unique entries
+
+//     data_csr.forEach(item => {
+//         const date = item.timestamp.split('T')[0];
+//         const dayNumber = new Date(date).getDate();
+
+//         const uniqueKey = `${dayNumber}-${item.esn}`; // Assuming 'esn' is unique per engine
+//         if (!uniqueSet.has(uniqueKey)) {
+//             uniqueSet.add(uniqueKey);
+//             esnCountMap.set(dayNumber, (esnCountMap.get(dayNumber) || 0) + 1);
+//         }
+//     });
+
+//     const chartData = Array.from(esnCountMap, ([dayNumber, engine_count]) => ({
+//         dayNumber,
+//         "No of Engines": engine_count
+//     }));
+
+//     console.log('CSR Chart Data:', chartData);
+//     return chartData;
+// };
+
   const prepareChartData = () => {
     const esnCountMap = new Map();
     data_csr.forEach(item => {
