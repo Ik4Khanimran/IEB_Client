@@ -1,121 +1,127 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import Axios for API requests
-import { ADD_CAL_AGENCY_URL } from '../../../utils/apiUrls';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import {
+  ADD_CAL_AGENCY_URL,
+  ADD_GAUGE_TYPE_URL,
+  ADD_CAL_LOCATION_URL,
+  ADD_CAL_STATUS_URL,
+  ADD_GAUGE_DATA_URL,
+} from '../../../utils/apiUrls';
 
-const CalAgencyNewEntry = () => {
+const NewEntryForm = () => {
   const navigate = useNavigate();
-  const [calAgency, setCalAgency] = useState(''); // Ensure you're using calAgency here
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [contact1, setContact1] = useState('');
-  const [contact2, setContact2] = useState('');
-  const [responseMessage, setResponseMessage] = useState(''); // Optional for feedback
+  const location = useLocation();
+  const { selectedTable } = location.state || {};  // Access selectedTable from state
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault(); // Prevent form from refreshing page on submit
+  const [formData, setFormData] = useState({});
+  const [responseMessage, setResponseMessage] = useState('');
+  const [fieldNames, setFieldNames] = useState([]);
+
+  useEffect(() => {
+    console.log("Selected Table:", selectedTable);  // Check if selectedTable is received
+
+    switch (selectedTable) {
+      case 'calibration':
+        setFieldNames([
+          { name: 'cal_agency', label: 'Calibration Agency' },
+          { name: 'agency_address', label: 'Agency Address' },
+          { name: 'agency_contact', label: 'Agency Contact' }
+        ]);
+        break;
+      case 'gauge':
+        setFieldNames([
+          { name: 'gauge_type', label: 'Gauge Type' },
+          { name: 'gauge_spec', label: 'Gauge Specification' }
+        ]);
+        break;
+      case 'location':
+        setFieldNames([
+          { name: 'location_name', label: 'Location Name' },
+          { name: 'location_code', label: 'Location Code' }
+        ]);
+        break;
+      case 'status':
+        setFieldNames([
+          { name: 'status_name', label: 'Status Name' }
+        ]);
+        break;
+      case 'data':
+        setFieldNames([
+          { name: 'gauge_id', label: 'Gauge ID' },
+          { name: 'gauge_value', label: 'Gauge Value' }
+        ]);
+        break;
+      default:
+        setFieldNames([]);
+        break;
+    }
+  }, [selectedTable]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let url;
+    switch (selectedTable) {
+      case 'calibration':
+        url = ADD_CAL_AGENCY_URL;
+        break;
+      case 'gauge':
+        url = ADD_GAUGE_TYPE_URL;
+        break;
+      case 'location':
+        url = ADD_CAL_LOCATION_URL;
+        break;
+      case 'status':
+        url = ADD_CAL_STATUS_URL;
+        break;
+      case 'data':
+        url = ADD_GAUGE_DATA_URL;
+        break;
+      default:
+        console.error('Invalid table selected');
+        return;
+    }
+
     try {
-      const newEntry = {
-        cal_agency: calAgency, // Use calAgency instead of agency
-        name,
-        address,
-        city,
-        contact1,
-        contact2,
-      };
-
-      // Use the correct API URL for the POST request
-      const response = await axios.post(ADD_CAL_AGENCY_URL, newEntry);
-
-      console.log('New entry added successfully:', response.data);
-      setResponseMessage('New entry added successfully!');
-
-      // Wait for 2 seconds before redirecting to the cal_agency_table page
-      setTimeout(() => {
-        navigate('/cal_agency_table');
-      }, 2000); // 2000 ms = 2 seconds
+      const response = await axios.post(url, formData);
+      setResponseMessage('Entry successfully added.');
+      navigate(-1);  // Navigate back after successful submission
     } catch (error) {
-      console.error('Error submitting new entry:', error);
-      setResponseMessage('Error submitting new entry.');
+      console.error('Error adding new entry:', error);
+      setResponseMessage('Failed to add the entry.');
     }
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="text-center">Add New Calibration Agency Entry</h2>
-      <form onSubmit={handleFormSubmit}>
-        <div className="mb-3">
-          <label htmlFor="calAgency" className="form-label">Cal Agency</label>
-          <input
-            type="text"
-            className="form-control"
-            id="calAgency"
-            value={calAgency} // Bind input value to calAgency state
-            onChange={(e) => setCalAgency(e.target.value)} // Update state on change
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">Name</label>
-          <input
-            type="text"
-            className="form-control"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="address" className="form-label">Address</label>
-          <input
-            type="text"
-            className="form-control"
-            id="address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="city" className="form-label">City</label>
-          <input
-            type="text"
-            className="form-control"
-            id="city"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="contact1" className="form-label">Contact 1</label>
-          <input
-            type="text"
-            className="form-control"
-            id="contact1"
-            value={contact1}
-            onChange={(e) => setContact1(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="contact2" className="form-label">Contact 2</label>
-          <input
-            type="text"
-            className="form-control"
-            id="contact2"
-            value={contact2}
-            onChange={(e) => setContact2(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">Add Entry</button>
+    <div className="container mt-3">
+      <h3>Create New Entry for {selectedTable}</h3>
+      <form onSubmit={handleSubmit}>
+        {fieldNames.map((field, index) => (
+          <div className="mb-3" key={index}>
+            <label className="form-label">{field.label}</label>
+            <input
+              type="text"
+              name={field.name}
+              value={formData[field.name] || ''}
+              onChange={handleChange}
+              className="form-control"
+            />
+          </div>
+        ))}
+        <button type="submit" className="btn btn-primary">Submit</button>
+        {responseMessage && <p>{responseMessage}</p>}
       </form>
-      {responseMessage && <p>{responseMessage}</p>} {/* Display response message */}
     </div>
   );
 };
 
-export default CalAgencyNewEntry;
+export default NewEntryForm;

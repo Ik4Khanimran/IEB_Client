@@ -74,6 +74,7 @@ const CalEntryTable = () => {
   }, [showTable, selectedTable]);
 
   const handleShowTable = () => setShowTable(true);
+  const handleHideTable = () => setShowTable(false);
   
   const handleTableChange = (e) => {
     setSelectedTable(e.target.value);
@@ -96,9 +97,9 @@ const CalEntryTable = () => {
     } else if (selectedTable === 'location') {
       url = `${DELETE_CAL_LOCATION_URL}/${id}/`; // Delete URL for Calibration Location
     } else if (selectedTable === 'status') {
-      url = `${DELETE_CAL_STATUS_URL}/${id}/`; // Delete URL for Calibration Status
+      url = `${DELETE_CAL_STATUS_URL}/${id}/`; // Delete URL for Calibration Location
     } else if (selectedTable === 'data') {
-      url = `${DELETE_GAUGE_DATA_URL}/${id}/`; // Delete URL for Gauge Data
+      url = `${DELETE_GAUGE_DATA_URL}/${id}/`; // Delete URL for Calibration Location
     } 
     
     if (url) {
@@ -131,9 +132,9 @@ const CalEntryTable = () => {
     } else if (selectedTable === 'location') {
       url = `${UPDATE_CAL_LOCATION_URL}/${id}/`; // Update URL for Calibration Location
     } else if (selectedTable === 'status') {
-      url = `${UPDATE_CAL_STATUS_URL}/${id}/`; // Update URL for Calibration Status
+      url = `${UPDATE_CAL_STATUS_URL}/${id}/`; // Update URL for Calibration Location
     } else if (selectedTable === 'data') {
-      url = `${UPDATE_GAUGE_DATA_URL}/${id}/`; // Update URL for Gauge Data
+      url = `${UPDATE_GAUGE_DATA_URL}/${id}/`; // Update URL for Calibration Location
     }
     
     if (url) {
@@ -158,6 +159,27 @@ const CalEntryTable = () => {
     setEditingEntry(null);
     setEditedData({});
   };
+
+  const handleCreateNewEntry = () => {
+    let createUrl;
+    // Determine the URL based on the selected table
+    if (selectedTable === 'calibration') {
+      createUrl = '/create-new-calibration'; // Route for creating a new calibration entry
+    } else if (selectedTable === 'gauge') {
+      createUrl = '/create-new-gauge'; // Route for creating a new gauge entry
+    } else if (selectedTable === 'location') {
+      createUrl = '/create-new-location'; // Route for creating a new location entry
+    } else if (selectedTable === 'status') {
+      createUrl = '/create-new-status'; // Route for creating a new status entry
+    } else if (selectedTable === 'data') {
+      createUrl = '/create-new-data'; // Route for creating a new data entry
+    }
+    
+    // Navigate to the determined URL
+    if (createUrl) {
+      navigate(createUrl);
+    }
+  }
 
   // Filter data based on the search term
   const filteredData = tableData.data.filter((row) =>
@@ -201,9 +223,8 @@ const CalEntryTable = () => {
                       <input
                         type="text"
                         name={header}
-                        value={editedData[header] || ''}
+                        value={editedData[header] || row[header]}
                         onChange={handleChange}
-                        className="form-control form-control-sm"
                       />
                     ) : (
                       row[header]
@@ -213,30 +234,21 @@ const CalEntryTable = () => {
                 <td>
                   {editingEntry === row.id ? (
                     <>
-                      <button
-                        className="btn btn-success btn-sm me-2"
-                        onClick={() => handleSave(row.id)} // Save changes
-                      >
+                      <button onClick={() => handleSave(row.id)} className="btn btn-success">
                         Save
                       </button>
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={handleCancel} // Cancel editing
-                      >
+                      <button onClick={handleCancel} className="btn btn-secondary">
                         Cancel
                       </button>
                     </>
                   ) : (
                     <>
-                      <BsPencilSquare
-                        className="text-primary mr-2"
-                        onClick={() => handleEdit(row)}
-                        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
-                      />
-                      <BsTrash
-                        onClick={() => handleDelete(row.id)}
-                        style={{ cursor: 'pointer', fontSize: '1.2rem' }}
-                      />
+                      <button onClick={() => handleEdit(row)} className="btn btn-warning">
+                        <BsPencilSquare />
+                      </button>
+                      <button onClick={() => handleDelete(row.id)} className="btn btn-danger">
+                        <BsTrash />
+                      </button>
                     </>
                   )}
                 </td>
@@ -244,67 +256,64 @@ const CalEntryTable = () => {
             ))}
           </tbody>
         </table>
-
+        
         {/* Pagination Controls */}
-        <nav>
-          <ul className="pagination">
-            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
-            </li>
-            {[...Array(totalPages)].slice(Math.max(0, currentPage - 2), currentPage + 1).map((_, index) => {
-              const page = currentPage - 1 + index;
-              return (
-                <li key={page} className={`page-item ${currentPage === page + 1 ? 'active' : ''}`}>
-                  <button className="page-link" onClick={() => handlePageChange(page + 1)}>
-                    {page + 1}
-                  </button>
-                </li>
-              );
-            })}
-            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
-            </li>
-          </ul>
-        </nav>
+        <div className="pagination-controls d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <span>Page {currentPage} of {totalPages}</span>
+          </div>
+          <div>
+            <button 
+              className="btn btn-light" 
+              onClick={() => handlePageChange(currentPage > 1 ? currentPage - 1 : 1)} 
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="mx-2">{currentPage}</span>
+            <button 
+              className="btn btn-light" 
+              onClick={() => handlePageChange(currentPage < totalPages ? currentPage + 1 : totalPages)} 
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     );
   };
 
-  const handleCreateNewPoint = () => {
-    // Navigate to create new point page
-    navigate('/create-new-point', { state: { selectedTable } });
-  };
-
   return (
-    <div className="container mt-3">
-      <div className="row mb-3 align-items-center">
-        <div className="col-md-3">
-          <select className="form-select" value={selectedTable} onChange={handleTableChange}>
-            <option value="calibration">Calibration Agency</option>
-            <option value="gauge">Gauge Type</option>
-            <option value="location">Calibration Location</option>
-            <option value="status">Calibration Status</option>
-            <option value="data">Gauge Data</option>
-          </select>
-          {/* <button onClick={() => navigateToNewEntryPage(selectedTable)}>
-            Create New Entry
-          </button> */}
-        </div>
-        <div className="col-md-5">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="col-md-4">
-          <button className="btn btn-primary" onClick={handleShowTable}>Show Table</button>
-          <button className="btn btn-secondary" onClick={handleCreateNewPoint}>Create New Point</button>
-        </div>
+    <div className="container">
+      <h2>Calibration Entry Table</h2>
+      <div className="mb-3">
+        <label htmlFor="table-select" className="form-label">Select Table</label>
+        <select id="table-select" className="form-select" onChange={handleTableChange}>
+          <option value="calibration">Calibration Agency</option>
+          <option value="gauge">Gauge Type</option>
+          <option value="location">Calibration Location</option>
+          <option value="status">Calibration Status</option>
+          <option value="data">Gauge Data</option>
+        </select>
       </div>
-      {showTable && renderTable()}
+      <button className="btn btn-primary mb-3" onClick={handleCreateNewEntry}>
+        Create New Entry
+      </button>
+      {showTable && (
+        <>
+          <div className="mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          {renderTable()}
+        </>
+      )}
     </div>
   );
 };

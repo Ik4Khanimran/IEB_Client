@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate  } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate  } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Layout from './component/htmlpage/common/master_layout';
@@ -34,8 +34,8 @@ import NewEntryForm from './component/htmlpage/quality/cal_agency_newentry';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [selectedTable, setSelectedTable] = useState(''); // Define selectedTable state
-  // const navigate = useNavigate(); // Use useNavigate for navigation
+  const [selectedTable, setSelectedTable] = useState(''); // Define selectedTable state
+  const navigate = useNavigate(); // Use useNavigate for navigation
 
 
   const handleLogin = () => {
@@ -46,13 +46,37 @@ function App() {
     setIsLoggedIn(false);
   };
 
- 
+  const handleTableChange = (e) => {
+    setSelectedTable(e.target.value);
+  };
+
+  const navigateToNewEntryPage = (selectedTable) => {
+    if (!selectedTable) {
+      alert('Please select a valid table');
+      return;
+    }
+
+    // Navigate to a route, passing the selected table as a parameter
+    navigate(`/new-entry/${selectedTable}`);
+  };
 
   
 
   return (
     <BrowserRouter>
-    
+    <div>
+        <h1>Select a Table to Add New Entry</h1>
+        <select onChange={handleTableChange} value={selectedTable}>
+          <option value="">Select Table</option>
+          <option value="calibration">Calibration</option>
+          <option value="gauge">Gauge</option>
+          <option value="location">Location</option>
+          <option value="status">Status</option>
+          <option value="data">Data</option>
+        </select>
+        <button onClick={() => navigateToNewEntryPage(selectedTable)}>Create New Entry</button>
+      </div>
+
       <Routes>
         <Route 
           path="/"
@@ -92,11 +116,6 @@ function App() {
         <Route path="/new-page" element={<NewPage />} />
         <Route path="/assemblyopresult" element={<Assemblyopresult />} />
         <Route path="/cal_agency_newentry" element={<NewEntryForm />} />
-        <Route path="/create-new-calibration" element={<NewEntryForm selectedTable="calibration" />} />
-        <Route path="/create-new-gauge" element={<NewEntryForm selectedTable="gauge" />} />
-        <Route path="/create-new-location" element={<NewEntryForm selectedTable="location" />} />
-        <Route path="/create-new-status" element={<NewEntryForm selectedTable="status" />} />
-        <Route path="/create-new-data" element={<NewEntryForm selectedTable="data" />} />
         
 
       </Routes>
