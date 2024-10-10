@@ -1,0 +1,55 @@
+html, body, #root {
+  height: 100%;
+  margin: 0; /* Ensure there's no margin */
+  padding: 0; /* Ensure there's no padding */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.container2 {
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100vh;
+  padding: 20px;
+}
+
+.greaves {
+  color: rgba(0, 81, 255, 0.705);
+  font-size: 32px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.ieb {
+  color: black;
+  font-size: 20px;
+}
+
+.table thead th { 
+  background-color: #343a40; /* Dark header background */
+  color: white; /* White text color */
+  text-align: center;
+  
+}
+
+
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6;
+}
+
+th,
+td {
+  padding: 8px 12px;
+  text-align: left; /* Align text to the left for readability */
+}
+
+th {
+  font-weight: bold;
+  background-color: #f8f9fa; /* Light background color for table headers */
+}
+
+.table-responsive {
+  margin: 20px 0; /* Spacing around the table */
+}
+

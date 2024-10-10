@@ -17,8 +17,6 @@ const Home = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [selectedBom, setSelectedBom] = useState(''); // State for selected BOM
   const [selectedESN, setSelectedESN] = useState('');
-  const [data_crankshaft, setData_Crankshaft] = useState([]);
-  const [data_camshaft, setData_Camshaft] = useState([]);
 
   const hasFetchedData = useRef(false);
 
@@ -33,8 +31,6 @@ const Home = () => {
         setData_Test(response.data.data_test);  // Ensure correct field names
         setData_Assly(response.data.data_assly);  // Ensure correct field names
         setDataset_01(response.data.dataset_01);
-        setData_Crankshaft(response.data.data_crankshaft); // Fetch crankshaft data
-        setData_Camshaft(response.data.data_camshaft); // Fetch camshaft data
       } else {
         console.error("API request failed:", response.data.message);
       }
@@ -61,7 +57,31 @@ const Home = () => {
       fetchData(year, month);
     }
   };
-  
+  // chart for CSR
+//   const prepareChartData = () => {
+//     const esnCountMap = new Map();
+//     const uniqueSet = new Set(); // Track unique entries
+
+//     data_csr.forEach(item => {
+//         const date = item.timestamp.split('T')[0];
+//         const dayNumber = new Date(date).getDate();
+
+//         const uniqueKey = `${dayNumber}-${item.esn}`; // Assuming 'esn' is unique per engine
+//         if (!uniqueSet.has(uniqueKey)) {
+//             uniqueSet.add(uniqueKey);
+//             esnCountMap.set(dayNumber, (esnCountMap.get(dayNumber) || 0) + 1);
+//         }
+//     });
+
+//     const chartData = Array.from(esnCountMap, ([dayNumber, engine_count]) => ({
+//         dayNumber,
+//         "No of Engines": engine_count
+//     }));
+
+//     console.log('CSR Chart Data:', chartData);
+//     return chartData;
+// };
+
   const prepareChartData = () => {
     const esnCountMap = new Map();
     data_csr.forEach(item => {
@@ -145,64 +165,6 @@ const Home = () => {
     locCounts[item.cur_loc] += item.count || 0; // Default to 0 if count is missing
   }
   });
-
-
-  // Prepare chart data for crankshaft
-  const prepareCrankshaftChartData = () => {
-    const qtyMap = new Map();
-    data_crankshaft.forEach(item => {
-      if (item.date) {  // Check if item.date exists
-        const dayNumber = new Date(item.date).getDate();  // Extract the day from the date
-        
-        // Increment the count for the corresponding day
-        qtyMap.set(dayNumber, (qtyMap.get(dayNumber) || 0) + item.produced_qty);
-      } else {
-        console.warn('Missing date for item:', item);
-      }
-    });
-  
-   
-    const chartData = Array.from(qtyMap, ([dayNumber, produced_qty]) => ({
-      dayNumber,
-      "No of Crankshafts": produced_qty  // Aggregate produced_qty for the chart
-    }));
-  
-    console.log('Crankshaft Chart Data:', chartData);
-    return chartData;
-  };
-  
-
-// Prepare chart data for camshaft
-const prepareCamshaftChartData = () => {
-  const qtyMap = new Map();
-  
-  data_camshaft.forEach(item => {
-    if (item.date) {
-      const dayNumber = new Date(item.date).getDate();  // Extract the day from the date
-      
-      // Increment the produced_qty for the corresponding day
-      qtyMap.set(dayNumber, (qtyMap.get(dayNumber) || 0) + item.produced_qty);
-    } else {
-      console.warn("Missing date for camshaft item:", item);
-    }
-  });
-
-  const chartData = Array.from(qtyMap, ([dayNumber, produced_qty]) => ({
-    dayNumber,
-    "No of Camshafts": produced_qty  // Aggregate produced_qty for the chart
-  }));
-
-  console.log('Camshaft Chart Data:', chartData);
-  return chartData;
-};
-
-
-
-
-  const crankshaftData = prepareCrankshaftChartData();
-  const camshaftData = prepareCamshaftChartData();
-
-
 
   // Extract values for display
   const V_PPC = locCounts[1];
@@ -308,7 +270,6 @@ const prepareCamshaftChartData = () => {
 
       <div style={{ width: '100%', overflowX: 'auto' }}>
         <Carousel>
-        {/* CSR Bar Chart */}
           <Carousel.Item>
             <BarChart width={window.innerWidth * 0.7} height={300} data={prepareChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -324,8 +285,6 @@ const prepareCamshaftChartData = () => {
               <p>Monthly production from CSR</p>
             </Carousel.Caption>
           </Carousel.Item>
-          
-        {/* Testing Bar Chart */}
           <Carousel.Item>
             <BarChart width={window.innerWidth * 0.7} height={300} data={prepareTestChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -341,8 +300,6 @@ const prepareCamshaftChartData = () => {
               <p>Monthly production from Testing</p>
             </Carousel.Caption>
           </Carousel.Item>
-        
-        {/* NeAssembly Bar Chart */}
           <Carousel.Item>
             <BarChart width={window.innerWidth * 0.7} height={300} data={prepareAsslyChartData()}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -356,39 +313,6 @@ const prepareCamshaftChartData = () => {
             </BarChart>
             <Carousel.Caption className="carousel-caption-top-right">
               <p>Monthly production from Assembly</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          {/* New Crankshaft Bar Chart */}
-          <Carousel.Item>
-            <BarChart width={window.innerWidth * 0.7} height={300} data={crankshaftData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dayNumber" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="No of Crankshafts" fill="#8884d8">
-                <LabelList dataKey="No of Crankshafts" position="top" />
-              </Bar>
-            </BarChart>
-            <Carousel.Caption className="carousel-caption-top-right">
-              <p>Monthly production of Crankshafts</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-
-          {/* New Camshaft Bar Chart */}
-          <Carousel.Item>
-            <BarChart width={window.innerWidth * 0.7} height={300} data={camshaftData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="dayNumber" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="No of Camshafts" fill="#82ca9d">
-                <LabelList dataKey="No of Camshafts" position="top" />
-              </Bar>
-            </BarChart>
-            <Carousel.Caption className="carousel-caption-top-right">
-              <p>Monthly production of Camshafts</p>
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>

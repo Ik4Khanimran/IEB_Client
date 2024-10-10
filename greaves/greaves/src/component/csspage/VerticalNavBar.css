@@ -1,0 +1,25 @@
+.vertical-navbar {
+  height: 100vh; /* Full height */
+  background-color: #f8f9fa; /* Background color */
+  padding-top: 20px; /* Top padding */
+}
+
+.vertical-navbar .nav-link,
+.vertical-navbar .dropdown-item {
+  color: #000; /* Link color */
+  padding: 10px 20px; /* Padding for links */
+  text-align: left; /* Align text to the left */
+  display: block; /* Display as block element */
+}
+
+.vertical-navbar .nav-link.active,
+.vertical-navbar .dropdown-item.active {
+  background-color: #007bff; /* Active background color */
+  color: #fff; /* Active link color */
+}
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Take up 100% of the viewport height */
+  width: 100%; /* Take up 100% of the available width */
+}

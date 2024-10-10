@@ -1,3 +1,5 @@
+// proper running code
+
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
@@ -11,11 +13,17 @@ import {
   DELETE_GAUGE_TYPE_URL,
   UPDATE_CAL_LOCATION_URL,
   DELETE_CAL_LOCATION_URL,
-  GET_CAL_LOCATION_URL
+  GET_CAL_LOCATION_URL,
+  GET_CAL_STATUS_URL,
+  DELETE_CAL_STATUS_URL,
+  UPDATE_CAL_STATUS_URL,
+  GET_GAUGE_DATA_URL,
+  DELETE_GAUGE_DATA_URL,
+  UPDATE_GAUGE_DATA_URL
 } from '../../../utils/apiUrls';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 
-const ITEMS_PER_PAGE = 10; // Number of items per page
+const ITEMS_PER_PAGE = 8; // Number of items per page
 
 const CalEntryTable = () => {
   const navigate = useNavigate();
@@ -30,22 +38,37 @@ const CalEntryTable = () => {
 
   // Fetch data based on selected table
   const fetchTableData = async (tableType) => {
-    const url = tableType === 'calibration' ? GET_CAL_AGENCY_URL : GET_GAUGE_TYPE_URL ; 
-    try {
-      const response = await axios.get(url);
-      if (response.data && Array.isArray(response.data.values) && response.data.values.length > 0) {
-        setTableData({
-          data: response.data.values,
-          header_names: response.data.header_names,
-        });
-      } else {
+    let url;
+    if (tableType === 'calibration') {
+      url = GET_CAL_AGENCY_URL;
+    } else if (tableType === 'gauge') {
+      url = GET_GAUGE_TYPE_URL;
+    } else if (tableType === 'location') {
+      url = GET_CAL_LOCATION_URL; // New URL for Calibration Location table
+    } else if (tableType === 'status'){
+      url = GET_CAL_STATUS_URL; // Handle any other cases if needed
+    } else if (tableType === 'data'){
+      url = GET_GAUGE_DATA_URL; // Handle any other cases if needed
+    }
+    
+    if (url) {
+      try {
+        const response = await axios.get(url);
+        if (response.data && Array.isArray(response.data.values) && response.data.values.length > 0) {
+          setTableData({
+            data: response.data.values,
+            header_names: response.data.header_names,
+          });
+        } else {
+          setTableData({ data: [], header_names: [] });
+        }
+      } catch (error) {
+        console.error(`Error fetching ${tableType} data:`, error);
         setTableData({ data: [], header_names: [] });
       }
-    } catch (error) {
-      console.error(`Error fetching ${tableType} data:`, error);
-      setTableData({ data: [], header_names: [] });
     }
   };
+
 
   useEffect(() => {
     if (showTable) {
@@ -69,15 +92,29 @@ const CalEntryTable = () => {
   };
 
   const handleDelete = async (id) => {
-    const url = selectedTable === 'calibration' ? `${DELETE_CAL_AGENCY_URL}/${id}/` : `${DELETE_GAUGE_TYPE_URL}/${id}/`;
-    try {
-      await axios.delete(url);
-      setTableData((prevData) => ({
-        ...prevData,
-        data: prevData.data.filter((entry) => entry.id !== id), // Correctly filter out the deleted entry
-      }));
-    } catch (error) {
-      console.error('Error deleting entry:', error);
+    let url;
+    if (selectedTable === 'calibration') {
+      url = `${DELETE_CAL_AGENCY_URL}/${id}/`;
+    } else if (selectedTable === 'gauge') {
+      url = `${DELETE_GAUGE_TYPE_URL}/${id}/`;
+    } else if (selectedTable === 'location') {
+      url = `${DELETE_CAL_LOCATION_URL}/${id}/`; // Delete URL for Calibration Location
+    } else if (selectedTable === 'status') {
+      url = `${DELETE_CAL_STATUS_URL}/${id}/`; // Delete URL for Calibration Location
+    } else if (selectedTable === 'data') {
+      url = `${DELETE_GAUGE_DATA_URL}/${id}/`; // Delete URL for Calibration Location
+    } 
+    
+    if (url) {
+      try {
+        await axios.delete(url);
+        setTableData((prevData) => ({
+          ...prevData,
+          data: prevData.data.filter((entry) => entry.id !== id), // Correctly filter out the deleted entry
+        }));
+      } catch (error) {
+        console.error('Error deleting entry:', error);
+      }
     }
   };
 
@@ -90,19 +127,33 @@ const CalEntryTable = () => {
   };
 
   const handleSave = async (id) => {
-    const url = selectedTable === 'calibration' ? `${UPDATE_CAL_AGENCY_URL}/${id}/` : `${UPDATE_GAUGE_TYPE_URL}/${id}/`;
-    try {
-      const response = await axios.put(url, editedData);
-      if (response.status === 200) {
-        setTableData((prevData) => ({
-          ...prevData,
-          data: prevData.data.map((entry) => (entry.id === id ? { ...entry, ...editedData } : entry)),
-        }));
-        setEditingEntry(null);
-        setEditedData({});
+    let url;
+    if (selectedTable === 'calibration') {
+      url = `${UPDATE_CAL_AGENCY_URL}/${id}/`;
+    } else if (selectedTable === 'gauge') {
+      url = `${UPDATE_GAUGE_TYPE_URL}/${id}/`;
+    } else if (selectedTable === 'location') {
+      url = `${UPDATE_CAL_LOCATION_URL}/${id}/`; // Update URL for Calibration Location
+    } else if (selectedTable === 'location') {
+      url = `${UPDATE_CAL_STATUS_URL}/${id}/`; // Update URL for Calibration Location
+    } else if (selectedTable === 'location') {
+      url = `${UPDATE_GAUGE_DATA_URL}/${id}/`; // Update URL for Calibration Location
+    }
+    
+    if (url) {
+      try {
+        const response = await axios.put(url, editedData);
+        if (response.status === 200) {
+          setTableData((prevData) => ({
+            ...prevData,
+            data: prevData.data.map((entry) => (entry.id === id ? { ...entry, ...editedData } : entry)),
+          }));
+          setEditingEntry(null);
+          setEditedData({});
+        }
+      } catch (error) {
+        console.error('Error updating entry:', error);
       }
-    } catch (error) {
-      console.error('Error updating entry:', error);
     }
   };
 
@@ -213,8 +264,9 @@ const CalEntryTable = () => {
         >
           <option value="calibration">Calibration Table</option>
           <option value="gauge">Gauge Table</option>
-          <option value="gauge">Calibration Location</option>
-          <option value="gauge">Calibration Status</option>
+          <option value="location">Calibration Location</option>
+          <option value="status">Calibration Status</option>
+          <option value="data">Gauge Data</option>
 
         </select>
         <button className="btn btn-primary btn-sm me-2" onClick={handleShowTable}>

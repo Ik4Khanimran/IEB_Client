@@ -1,0 +1,55 @@
+/* Ensure full height for the body and html */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Container to center the content */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  height: 100vh; /* Full viewport height */
+}
+
+/* Style for form rows to ensure they are centered within the container */
+/* .row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+} */
+
+/* Style for form groups to ensure alignment */
+.form-group {
+  margin-bottom: 1rem; /* Space between form groups */
+}
+
+.form-horizontal {
+  width: 100%; /* Full width for the form */
+  max-width: 400px; /* Maximum width for the form */
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  width: 100%; /* Button full width */
+}
+
+.alert {
+  width: 100%; /* Alert full width */
+  text-align: center; /* Center text in alert */
+}
+.form-group {
+  margin-bottom: 1rem; /* Space between form groups */
+}
+
+.form-group label {
+  margin-right: 1rem; /* Space between label and input */
+}
+
+.form-group input {
+  margin-top: 0.5rem; /* Optional: Space above the input field */
+}

@@ -1,0 +1,165 @@
+html, body, #root {
+  height: 100%;
+  margin: 0; /* Ensure there's no margin */
+  padding: 0; /* Ensure there's no padding */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.container-fluid {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take up 100% of the viewport height */
+  margin: 0; /* Remove margin */
+  padding: 0; /* Remove padding */
+}
+
+.container2 {
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100vh;
+  padding: 20px;
+}
+
+
+.header-row, .footer-row {
+  flex-shrink: 0; /* Ensure header and footer do not shrink */
+}
+
+.main-content {
+  flex-grow: 1; /* Allow main content to grow and take up remaining space */
+  display: flex;
+  overflow: hidden; /* Prevent overflow in main content area */
+}
+
+.nav-bar {
+  flex-shrink: 0; /* Ensure nav bar does not shrink */
+  overflow: hidden; /* Prevent overflow in nav bar */
+}
+
+.content-area {
+  flex-grow: 1; /* Allow content area to grow and take up remaining space */
+  overflow: hidden; /* Prevent overflow in content area */
+}
+
+.content-wrapper {
+  height: 100%; /* Ensure content wrapper takes up full height */
+  overflow: auto; /* Allow scrolling within the content area if needed */
+}
+
+.separator {
+  border-top: 1px dotted #000; /* Add dotted line at the top */
+}
+
+.separator_vt {
+  border-right: 1px dotted #000; /* Add vertical dotted line */
+}
+
+.brand-text {
+  font-size: 32px;
+  font-family: 'Rubik', sans-serif; /* or the font-family used in your link */
+  font-weight: 600; /* or the font-weight used in your link */
+  color: #1607eb; /* or the color used in your link */
+  padding: 0;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.plant-text {
+  font-size: 28px;
+  font-family: 'Rubik', sans-serif; /* or the font-family used in your link */
+  font-weight: 600; /* or the font-weight used in your link */
+  color: #0e8f44; /* or the color used in your link */
+  margin: 0;
+  margin-top: 5px; /* Adjust as needed */
+  margin-bottom: 2px; /* Adjust as needed */
+}
+
+/* Css for scrolling footer */
+.scrolling-text {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: scrollText 10s linear infinite;
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* css for submit buttons */
+.form-submit-button {
+  background: #016ABC;
+  color: #fff;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px #eee;
+  text-shadow: none;
+}
+
+.form-submit-button:hover {
+  background: #B9DFFF;
+  color: #016ABC;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px #eee;
+  text-shadow: none;
+}
+
+/* css for text input field */
+.css-input {
+  font-size: 14px;
+  border-radius: 6px;
+  line-height: 1.5;
+  margin-left: 50px;
+  padding: 5px 10px;
+  transition: box-shadow 100ms ease-in, border 100ms ease-in, background-color 100ms ease-in;
+  border: 2px solid #016ABC;
+  color: rgb(14, 14, 16);
+  display: block;
+  height: 30px;
+}
+
+.css-input:hover {
+  border-color: #ccc;
+}
+
+.css-input:focus {
+  border-color: #9147ff;
+  background: #fff;
+}
+
+/* css styles for Nav-Bar */
+/* Custom styles for the vertical navbar */
+.navbar-nav .nav-item {
+  margin-bottom: 10px;
+}
+
+.navbar-nav .dropdown-menu {
+  position: static; /* Keep the dropdown within the flow of the document */
+  float: none; /* Disable floating */
+}
+.header-info {
+  /* text-align: right;
+  font-size: 12px;*/
+  margin-right: 10px; /* Pushes the header-info to the far right while keeping padding */
+  margin-top: 2.5px;
+}
+
+@media print {
+  body * {
+      visibility: hidden;
+  }
+  .container2, .container2 * {
+      visibility: visible;
+  }
+  .container2 {
+      position: absolute;
+      left: 0;
+      top: 0;
+  }
+}
