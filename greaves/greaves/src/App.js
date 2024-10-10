@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate  } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Layout from './component/htmlpage/common/master_layout';
@@ -24,9 +24,8 @@ import Assemblyop from './component/htmlpage/atp/assemblyop';
 import NewPage from './component/htmlpage/atp/newpage';
 import Assemblyopresult from './component/htmlpage/atp/assemblyopresult'
 import CalAgencyTable from './component/htmlpage/quality/cal_agency_table'; // Adjust the path accordingly
-
-import NewEntryForm from './component/htmlpage/quality/cal_agency_newentry';
-
+import CalAgencyNewEntry from './component/htmlpage/quality/cal_agency_newentry';
+// import CalAgencyEdit from './component/htmlpage/quality/cal_agency_edit';
 
 
 
@@ -34,9 +33,6 @@ import NewEntryForm from './component/htmlpage/quality/cal_agency_newentry';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [selectedTable, setSelectedTable] = useState(''); // Define selectedTable state
-  // const navigate = useNavigate(); // Use useNavigate for navigation
-
 
   const handleLogin = () => {
     setIsLoggedIn(true);
@@ -45,14 +41,10 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(false);
   };
-
- 
-
   
 
   return (
     <BrowserRouter>
-    
       <Routes>
         <Route 
           path="/"
@@ -91,13 +83,8 @@ function App() {
         <Route path="/" element={<Assemblyop />} />
         <Route path="/new-page" element={<NewPage />} />
         <Route path="/assemblyopresult" element={<Assemblyopresult />} />
-        <Route path="/cal_agency_newentry" element={<NewEntryForm />} />
-        <Route path="/create-new-calibration" element={<NewEntryForm selectedTable="calibration" />} />
-        <Route path="/create-new-gauge" element={<NewEntryForm selectedTable="gauge" />} />
-        <Route path="/create-new-location" element={<NewEntryForm selectedTable="location" />} />
-        <Route path="/create-new-status" element={<NewEntryForm selectedTable="status" />} />
-        <Route path="/create-new-data" element={<NewEntryForm selectedTable="data" />} />
-        
+        <Route path="/cal_agency_newentry" element={<CalAgencyNewEntry />} />
+        {/* <Route path="/cal_agency_edit/:id" element={<CalAgencyEdit />} /> */}
 
       </Routes>
     </BrowserRouter>

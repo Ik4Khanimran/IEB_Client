@@ -14,14 +14,11 @@ import {
   GET_CAL_LOCATION_URL,
   GET_CAL_STATUS_URL,
   DELETE_CAL_STATUS_URL,
-  UPDATE_CAL_STATUS_URL,
-  GET_GAUGE_DATA_URL,
-  DELETE_GAUGE_DATA_URL,
-  UPDATE_GAUGE_DATA_URL
+  UPDATE_CAL_STATUS_URL
 } from '../../../utils/apiUrls';
 import { BsPencilSquare, BsTrash } from 'react-icons/bs';
 
-const ITEMS_PER_PAGE = 8; // Number of items per page
+const ITEMS_PER_PAGE = 10; // Number of items per page
 
 const CalEntryTable = () => {
   const navigate = useNavigate();
@@ -43,10 +40,8 @@ const CalEntryTable = () => {
       url = GET_GAUGE_TYPE_URL;
     } else if (tableType === 'location') {
       url = GET_CAL_LOCATION_URL; // New URL for Calibration Location table
-    } else if (tableType === 'status'){
+    } else {
       url = GET_CAL_STATUS_URL; // Handle any other cases if needed
-    } else if (tableType === 'data'){
-      url = GET_GAUGE_DATA_URL; // Handle any other cases if needed
     }
     
     if (url) {
@@ -67,6 +62,7 @@ const CalEntryTable = () => {
     }
   };
 
+
   useEffect(() => {
     if (showTable) {
       fetchTableData(selectedTable);
@@ -74,6 +70,7 @@ const CalEntryTable = () => {
   }, [showTable, selectedTable]);
 
   const handleShowTable = () => setShowTable(true);
+  const handleHideTable = () => setShowTable(false);
   
   const handleTableChange = (e) => {
     setSelectedTable(e.target.value);
@@ -96,9 +93,7 @@ const CalEntryTable = () => {
     } else if (selectedTable === 'location') {
       url = `${DELETE_CAL_LOCATION_URL}/${id}/`; // Delete URL for Calibration Location
     } else if (selectedTable === 'status') {
-      url = `${DELETE_CAL_STATUS_URL}/${id}/`; // Delete URL for Calibration Status
-    } else if (selectedTable === 'data') {
-      url = `${DELETE_GAUGE_DATA_URL}/${id}/`; // Delete URL for Gauge Data
+      url = `${DELETE_CAL_STATUS_URL}/${id}/`; // Delete URL for Calibration Location
     } 
     
     if (url) {
@@ -130,10 +125,8 @@ const CalEntryTable = () => {
       url = `${UPDATE_GAUGE_TYPE_URL}/${id}/`;
     } else if (selectedTable === 'location') {
       url = `${UPDATE_CAL_LOCATION_URL}/${id}/`; // Update URL for Calibration Location
-    } else if (selectedTable === 'status') {
-      url = `${UPDATE_CAL_STATUS_URL}/${id}/`; // Update URL for Calibration Status
-    } else if (selectedTable === 'data') {
-      url = `${UPDATE_GAUGE_DATA_URL}/${id}/`; // Update URL for Gauge Data
+    } else if (selectedTable === 'location') {
+      url = `${UPDATE_CAL_STATUS_URL}/${id}/`; // Update URL for Calibration Location
     }
     
     if (url) {
@@ -244,67 +237,69 @@ const CalEntryTable = () => {
             ))}
           </tbody>
         </table>
-
-        {/* Pagination Controls */}
-        <nav>
-          <ul className="pagination">
-            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
-            </li>
-            {[...Array(totalPages)].slice(Math.max(0, currentPage - 2), currentPage + 1).map((_, index) => {
-              const page = currentPage - 1 + index;
-              return (
-                <li key={page} className={`page-item ${currentPage === page + 1 ? 'active' : ''}`}>
-                  <button className="page-link" onClick={() => handlePageChange(page + 1)}>
-                    {page + 1}
-                  </button>
-                </li>
-              );
-            })}
-            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-              <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Next</button>
-            </li>
-          </ul>
-        </nav>
       </div>
     );
   };
 
-  const handleCreateNewPoint = () => {
-    // Navigate to create new point page
-    navigate('/create-new-point', { state: { selectedTable } });
-  };
-
   return (
-    <div className="container mt-3">
-      <div className="row mb-3 align-items-center">
-        <div className="col-md-3">
-          <select className="form-select" value={selectedTable} onChange={handleTableChange}>
-            <option value="calibration">Calibration Agency</option>
-            <option value="gauge">Gauge Type</option>
-            <option value="location">Calibration Location</option>
-            <option value="status">Calibration Status</option>
-            <option value="data">Gauge Data</option>
-          </select>
-          {/* <button onClick={() => navigateToNewEntryPage(selectedTable)}>
-            Create New Entry
-          </button> */}
-        </div>
-        <div className="col-md-5">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <div className="col-md-4">
-          <button className="btn btn-primary" onClick={handleShowTable}>Show Table</button>
-          <button className="btn btn-secondary" onClick={handleCreateNewPoint}>Create New Point</button>
-        </div>
+    <div className="d-flex flex-column align-items-center mt-4">
+      {/* Dropdown, Search and Button container */}
+      <div className="d-flex align-items-center mb-3">
+        <select
+          className="form-select form-select-sm me-2"
+          aria-label="Select Table"
+          style={{ width: '150px' }}
+          onChange={handleTableChange}
+        >
+          <option value="calibration">Calibration Table</option>
+          <option value="gauge">Gauge Table</option>
+          <option value="location">Calibration Location</option>
+          <option value="status">Calibration Status</option>
+
+        </select>
+        <button className="btn btn-primary btn-sm me-2" onClick={handleShowTable}>
+          Show Table
+        </button>
+        <button className="btn btn-secondary btn-sm me-2" onClick={handleHideTable}>
+          Hide Table
+        </button>
+        <button className="btn btn-success btn-sm" onClick={() => navigate('/cal_agency_newentry')}>
+          Create New Entry
+        </button>
+
+        {/* Search bar */}
+        <input
+          type="text"
+          className="form-control form-control-sm me-2"
+          style={{ width: '200px' }}
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
-      {showTable && renderTable()}
+
+      {/* Container for the dynamic table */}
+      {showTable && (
+        <div className="border border-secondary rounded p-3" style={{ width: '90%', maxWidth: '800px', backgroundColor: '#f8f9fa' }}>
+          {renderTable()}
+
+          {/* Pagination controls */}
+          <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content-center">
+              {[...Array(totalPages)].map((_, index) => (
+                <li
+                  key={index}
+                  className={`page-item ${index + 1 === currentPage ? 'active' : ''}`}
+                >
+                  <button className="page-link" onClick={() => handlePageChange(index + 1)}>
+                    {index + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      )}
     </div>
   );
 };

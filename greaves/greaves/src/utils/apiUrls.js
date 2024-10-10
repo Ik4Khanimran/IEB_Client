@@ -60,10 +60,5 @@ export const GET_CAL_STATUS_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/get_cal_s
 export const DELETE_CAL_STATUS_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_cal_status/`;
 export const UPDATE_CAL_STATUS_URL =  `${MAIN_DOMAIN}/${APP_NAMES.Quality}/edit_cal_status/`;
 
-export const ADD_GAUGE_DATA_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/add_gauge_table/`;
-export const GET_GAUGE_DATA_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_gauge_table/`;
-export const DELETE_GAUGE_DATA_URL = `${MAIN_DOMAIN}/${APP_NAMES.Quality}/delete_cal_status/`;
-export const UPDATE_GAUGE_DATA_URL =  `${MAIN_DOMAIN}/${APP_NAMES.Quality}/edit_gauge_table/`;
-
 
 // Add more URLs as needed
